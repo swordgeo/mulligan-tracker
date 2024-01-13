@@ -1,3 +1,13 @@
+function clearData() {
+  fetch('/clear', {method: 'POST'})
+    .then(response => response.json())
+    .then(data => {
+      updateGraph(data.mulligan_data);
+      updateStats(data.mulligan_data);
+    });
+}
+
+
 function keepHand() {
   fetch('/keep-hand', { method: 'POST' })
       .then(response => response.json())
@@ -82,9 +92,20 @@ function updateStats(mulliganData) {
       document.getElementById('mull' + i).textContent = counts[i];
   }
 
+  // if (mulliganData == []) {
+  //   for (let i = 0; i <= 7; i++) {
+  //     document.getElementById('mull' + i).textContent = 0;
+  // }
+  // }
+
+
   // Calculate the mean
   const mean = mulliganData.reduce((acc, cur) => acc + cur, 0) / mulliganData.length;
   document.getElementById('mullRatio').textContent = mean.toFixed(2); // Rounds to 2 decimal places
+
+  if (mulliganData == []) {
+    document.getElementById('mullRatio').textContent = 0;
+  }
 }
 
 

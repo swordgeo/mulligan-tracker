@@ -17,7 +17,8 @@
   
   <body>
     <header>
-      <a href="#">Mulligan Tracker</a>
+      <h1>MTG Mulligan tracker</h1>
+      <p>Take your deck, draw a hand of seven, and choose whether to keep that hand or mulligan. We'll keep track of how often you mulligan so you can determine how consistent your deck is.</p>
     </header>
 
     <main>
@@ -37,6 +38,8 @@
           const mulliganData = {{ session['mulligan_data'] | tojson }};
         </script>
       </section>
+
+      <button onclick="clearData()">Clear Data</button>
 
       <div id="stats">
         <ul>

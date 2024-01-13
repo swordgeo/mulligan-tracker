@@ -2,8 +2,13 @@ function clearData() {
   fetch('/clear', {method: 'POST'})
     .then(response => response.json())
     .then(data => {
-      updateGraph(data.mulligan_data);
-      updateStats(data.mulligan_data);
+      if (data.success) {
+        document.getElementById('gameNumber').textContent = 1;
+        document.getElementById('currentMulligan').textContent = 0;
+        const resetData = [];
+        updateGraph(resetData);
+        updateStats(resetData);
+      }
     });
 }
 

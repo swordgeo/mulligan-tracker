@@ -26,7 +26,6 @@ def keep_hand():
     session['mulligan_data'].append(session['mulligan_count'])
     session['game_number'] += 1
     session['mulligan_count'] = 0
-    print(session['mulligan_data'])
     return jsonify(game_number=session['game_number'], 
                    mulligan_count=session['mulligan_count'],
                    mulligan_data=session['mulligan_data']
@@ -45,10 +44,7 @@ def clear():
   session['game_number'] = 1
   session['mulligan_count'] = 0
   session['mulligan_data'] = []
-  return jsonify(game_number=session['game_number'], 
-                   mulligan_count=session['mulligan_count'],
-                   mulligan_data=session['mulligan_data']
-                  )
+  return jsonify(success=True)
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)

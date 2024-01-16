@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from flask_session import Session
 from dotenv import load_dotenv
-from os import urandom
 import os
 import re
 import requests

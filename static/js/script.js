@@ -186,7 +186,7 @@ function dealHand(currentHand) {
   handDiv.innerHTML = '';
   for (card of currentHand) {
     const li = document.createElement('li');
-    li.innerHTML += `<img src="${card.image_url}" alt="Image of card ${card.image_url}"><br>${card.name}`;
+    li.innerHTML += `<img class="card" src="${card.image_url}" alt="Image of card ${card.image_url}"><br><span class="card-name">${card.name}</span>`;
     handDiv.appendChild(li);
   }
 }

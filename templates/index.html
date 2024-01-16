@@ -22,9 +22,20 @@
     </header>
 
     <main>
-      <h1>Simulating Game #<span id="gameNumber">{{ game_number }}</span> - Mulligan #<span id="currentMulligan">{{ mulligan_count }}</span></h1>
-      <button onclick="keepHand()">Keep Hand</button>
-      <button onclick="mulliganHand()">Mulligan</button>
+
+      <form id="decklistForm" method="post">
+        <textarea name="decklist" rows="10" cols="50" placeholder="Enter your decklist here..."></textarea>
+        <button type="submit">Submit Decklist</button>
+      </form>
+
+      
+      <section>
+        <h2>Simulating Game #<span id="gameNumber">{{ game_number }}</span> - Mulligan #<span id="currentMulligan">{{ mulligan_count }}</span></h2>
+        <p><span id="deck-length">0</span> cards in deck.</p>
+        <ul id="hand-display"></ul>
+        <button onclick="keepHand()">Keep Hand</button>
+        <button onclick="mulliganHand()">Mulligan</button>
+      </section>
       <!-- Display Graph Here -->
 
       <section id="graph">
@@ -37,9 +48,11 @@
         <script type="text/javascript">
           const mulliganData = {{ session['mulligan_data'] | tojson }};
         </script>
+
+        <button onclick="clearData()">Clear Data</button>
       </section>
 
-      <button onclick="clearData()">Clear Data</button>
+      
 
       <div id="stats">
         <ul>
@@ -59,6 +72,7 @@
 
     <footer class="center"></footer>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
   </body>
   
 </html>

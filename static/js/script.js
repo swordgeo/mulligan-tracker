@@ -15,22 +15,42 @@ function clearData() {
 
 function keepHand() {
   fetch('/keep-hand', { method: 'POST' })
-      .then(response => response.json())
-      .then(data => {
+    .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
           document.getElementById('gameNumber').textContent = data.game_number;
           document.getElementById('currentMulligan').textContent = data.mulligan_count;
           updateGraph(data.mulligan_data);
           updateStats(data.mulligan_data);
+
+          // console.log(data);
+          if (data.current_hand) {
+            dealHand(data.current_hand);
+          }
       });
 }
 
 function mulliganHand() {
   fetch('/mulligan', { method: 'POST' })
-      .then(response => response.json())
-      .then(data => {
+    .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
           // Update the UI based on the response
           // For example, update mulligan count if you're displaying it
           document.getElementById('currentMulligan').textContent = data.mulligan_count;
+
+          // console.log(data);
+          if (data.current_hand) {
+            dealHand(data.current_hand);
+          }
       });
 }
 
@@ -125,3 +145,48 @@ window.addEventListener('resize', function() {
       myChart.resize();
   }
 });
+
+
+
+document.getElementById('decklistForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // Prevents the default form submission
+
+  // Get the decklist value from the form
+  var decklist = this.elements['decklist'].value;
+
+  // Create an AJAX request to the /submit-decklist route
+  fetch('/submit-decklist', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'decklist=' + encodeURIComponent(decklist)
+  })
+  .then(response => response.json())
+  .then(data => {
+
+      // console.log(data);
+      // Update the page with the response data
+      // For example, update current_hand and deck display
+      document.getElementById('deck-length').textContent = data.deck_length;
+
+      // console.log(data.current_hand);
+
+      dealHand(data.current_hand);
+      // .textContent = data.current_hand;
+      // ... other DOM updates based on 'data.deck'
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+});
+
+function dealHand(currentHand) {
+  const handDiv = document.getElementById('hand-display');
+  handDiv.innerHTML = '';
+  for (card of currentHand) {
+    const li = document.createElement('li');
+    li.innerHTML += `<img src="${card.image_url}" alt="Image of card ${card.image_url}"><br>${card.name}`;
+    handDiv.appendChild(li);
+  }
+}

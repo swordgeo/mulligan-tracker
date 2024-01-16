@@ -1,5 +1,7 @@
 @media (min-width: 60em) {
 
- 
+  .card {
+    max-width: 200px;
+  }
 
 }

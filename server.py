@@ -21,8 +21,9 @@ def index():
     if 'game_number' not in session:
         session['game_number'] = 1
         session['mulligan_count'] = 0
+        session['keep_count'] = 7
         session['mulligan_data'] = []
-    return render_template('index.html', game_number=session['game_number'], mulligan_count=session['mulligan_count'])
+    return render_template('index.html', game_number=session['game_number'], mulligan_count=session['mulligan_count'], keep_count=session['keep_count'])
 
 
 @app.route('/keep-hand', methods=['POST'])
@@ -30,13 +31,16 @@ def keep_hand():
     # If someone goes past the limit, ignore the results
     if session['mulligan_count'] > 7:
         session['mulligan_count'] = 0
+        session['keep_count'] = 7
         return jsonify(game_number=session['game_number'], 
                    mulligan_count=session['mulligan_count'],
-                   mulligan_data=session['mulligan_data']
+                   mulligan_data=session['mulligan_data'],
+                   keep_count=session['keep_count']
                   )
     session['mulligan_data'].append(session['mulligan_count'])
     session['game_number'] += 1
     session['mulligan_count'] = 0
+    session['keep_count'] = 7
 
     # if we have a deck, reshuffle and deal a new hand along with everything else
     if 'deck' in session:
@@ -45,30 +49,35 @@ def keep_hand():
       return jsonify(game_number=session['game_number'], 
                     mulligan_count=session['mulligan_count'],
                     mulligan_data=session['mulligan_data'],
+                    keep_count=session['keep_count'],
                     current_hand=session['current_hand']
                   )
     else :
       return jsonify(game_number=session['game_number'], 
                     mulligan_count=session['mulligan_count'],
-                    mulligan_data=session['mulligan_data']
+                    mulligan_data=session['mulligan_data'],
+                    keep_count=session['keep_count']
                     )
 
 
 @app.route('/mulligan', methods=['POST'])
 def mulligan():
     session['mulligan_count'] += 1
-
+    if session['mulligan_count'] > 1:
+        session['keep_count'] -= 1
     # if we have a deck, reshuffle and deal a new hand along with everything else
     if 'deck' in session:
       session['current_hand'] = shuffle_and_deal(session['deck'])
       # print(session['current_hand'])
       return jsonify(game_number=session['game_number'], 
                     mulligan_count=session['mulligan_count'],
+                    keep_count=session['keep_count'],
                     current_hand=session['current_hand']
                   )
     else :
       return jsonify(game_number=session['game_number'], 
-                    mulligan_count=session['mulligan_count']
+                    mulligan_count=session['mulligan_count'],
+                    keep_count=session['keep_count']
                     )
 
               
@@ -79,6 +88,7 @@ def clear():
   session['game_number'] = 1
   session['mulligan_count'] = 0
   session['mulligan_data'] = []
+  session['keep_count'] = 7
   return jsonify(success=True)
 
 

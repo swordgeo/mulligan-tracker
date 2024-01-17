@@ -5,6 +5,7 @@ function clearData() {
       if (data.success) {
         document.getElementById('gameNumber').textContent = 1;
         document.getElementById('currentMulligan').textContent = 0;
+        document.getElementById('currentKeep').textContent = 7;
         const resetData = [];
         updateGraph(resetData);
         updateStats(resetData);
@@ -24,6 +25,7 @@ function keepHand() {
     .then(data => {
           document.getElementById('gameNumber').textContent = data.game_number;
           document.getElementById('currentMulligan').textContent = data.mulligan_count;
+          document.getElementById('currentKeep').textContent = data.keep_count;
           updateGraph(data.mulligan_data);
           updateStats(data.mulligan_data);
 
@@ -46,6 +48,7 @@ function mulliganHand() {
           // Update the UI based on the response
           // For example, update mulligan count if you're displaying it
           document.getElementById('currentMulligan').textContent = data.mulligan_count;
+          document.getElementById('currentKeep').textContent = data.keep_count;
 
           // console.log(data);
           if (data.current_hand) {

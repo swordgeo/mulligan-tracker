@@ -29,8 +29,8 @@
       </form>
 
       <section class="center">
-        <h2>Simulating Game #<span id="gameNumber">{{ game_number }}</span> - Mulligan #<span id="currentMulligan">{{ mulligan_count }}</span></h2>
-        <p><span id="deck-length">0</span> cards in deck.</p>
+        <h2>Simulating: Game #<span id="gameNumber">{{ game_number }}</span> - Mulligan #<span id="currentMulligan">{{ mulligan_count }}</span> - Keeping <span id="currentKeep">{{ keep_count }}</span> cards</h2>
+        <p><span id="deck-length">0</span> cards found in library.</p>
         <ul id="hand-display" class="center"></ul>
         <button onclick="keepHand()">Keep Hand</button>
         <button onclick="mulliganHand()">Mulligan</button>

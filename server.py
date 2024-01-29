@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from flask_session import Session
 from dotenv import load_dotenv
+import constants
+import json
 import os
 import re
 import requests
@@ -18,12 +20,14 @@ Session(app)
 
 @app.route('/')
 def index():
+    increment_visit_count()
+    visit_count = read_visit_count()
     if 'game_number' not in session:
         session['game_number'] = 1
         session['mulligan_count'] = 0
         session['keep_count'] = 7
         session['mulligan_data'] = []
-    return render_template('index.html', game_number=session['game_number'], mulligan_count=session['mulligan_count'], keep_count=session['keep_count'])
+    return render_template('index.html', game_number=session['game_number'], mulligan_count=session['mulligan_count'], keep_count=session['keep_count'], visit_count=visit_count)
 
 
 @app.route('/keep-hand', methods=['POST'])
@@ -199,26 +203,18 @@ def shuffle_and_deal(deck):
     return deck[:7] #top seven cards
 
 
-# def fetch_card_images(decklist):
-#     identifiers = [{'name': card[0]} for card in decklist]  # Always using the name identifier
+def read_visit_count():
+    try:
+        with open(constants.JSON_FILENAME, 'r') as file:
+            return json.load(file).get('count', 0)
+    except FileNotFoundError:
+        return 0
+    
 
-#     response = requests.post('https://api.scryfall.com/cards/collection', json={"identifiers": identifiers})
-#     deck_with_images = []
-#     if response.status_code == 200:
-#         cards_data = response.json()['data']
-#         for card_data, card_info in zip(cards_data, decklist):
-#             # Handle double-sided cards
-#             if 'card_faces' in card_data:
-#                 image_url = card_data['card_faces'][0]['image_uris']['normal'] if 'image_uris' in card_data['card_faces'][0] else None
-#             else:
-#                 image_url = card_data['image_uris']['normal'] if 'image_uris' in card_data else None
-            
-#             deck_with_images.append({'name': card_info[0], 'image_url': image_url, 'count': card_info[-1]})
-#     else:
-#         print(f"Failed to fetch data: {response.status_code}")
-
-#     return deck_with_images
-
+def increment_visit_count():
+    count = read_visit_count()
+    with open(constants.JSON_FILENAME, 'w') as file:
+        json.dump({'count': count + 1}, file)
 
 
 if __name__ == '__main__':
